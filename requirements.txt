@@ -46,4 +46,4 @@ typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 zipp==3.20.2
-seaborn==4.2
+seaborn==0.13.2
