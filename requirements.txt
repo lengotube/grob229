@@ -31,18 +31,7 @@ openpyxl==3.1.5
 packaging==24.1
 pandas==2.2.3
 partd==1.4.2
-pillow==10.4.0
-protobuf==5.28.2
-pyarrow==17.0.0
-pydeck==0.9.1
-Pygments==2.18.0
-pyparsing==3.2.0
-pyreadr==0.5.2
-pyreadstat==1.2.7
-python-dateutil==2.9.0.post0
-pytz==2024.2
-PyYAML==6.0.2
-referencing==0.35.1
+pillow==10.4.0˜˜
 requests==2.32.3
 rich==13.9.2
 rpds-py==0.20.0
@@ -57,3 +46,4 @@ typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 zipp==3.20.2
+seaborn==4.2
