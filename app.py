@@ -1,32 +1,38 @@
 import streamlit as st
 import pandas as pd
-import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Путь к папке с данными
-DATA_FOLDER = 'ALL_DATA'
+# Загружаем данные
+file_path = "aggregated_results.xlsx"  # Укажите путь к вашему файлу
+df_pandas = pd.read_excel(file_path)
 
-# Функция для загрузки данных
-def load_data(year, country):
-    file_name = f"{country}_{year}.xlsx"  # Предполагается, что файлы имеют такой формат
-    file_path = os.path.join(DATA_FOLDER, file_name)
-    if os.path.exists(file_path):
-        return pd.read_excel(file_path)
-    else:
-        st.error(f"Файл {file_name} не найден.")
-        return None
+# Разделяем 'year' на страну и год
+df_pandas[['country', 'year']] = df_pandas['year'].str.split('_', expand=True)
 
-# Получаем доступные годы и страны
-years = [file.split('_')[1].split('.')[0] for file in os.listdir(DATA_FOLDER) if file.endswith('.xlsx')]
-countries = list(set(file.split('_')[0] for file in os.listdir(DATA_FOLDER) if file.endswith('.xlsx')))
+# Преобразуем год в числовой формат
+df_pandas['year'] = pd.to_numeric(df_pandas['year'])
 
-# Выбор года и страны
-selected_year = st.selectbox('Выберите год:', sorted(years))
-selected_country = st.selectbox('Выберите страну:', sorted(countries))
+# Выбор стран для отображения
+countries = df_pandas['country'].unique().tolist()
+selected_countries = st.multiselect("Выберите страны для отображения:", countries, default=countries)
 
-# Загрузка данных и отображение
-data = load_data(selected_year, selected_country)
-if data is not None:
-    st.write(data)
+# Фильтруем данные по выбранным странам
+filtered_data = df_pandas[df_pandas['country'].isin(selected_countries)]
 
-# Заголовок
-st.title('Дэшборд данных из ALL_DATA')
+# Проверка, что данные не пустые после фильтрации
+if not filtered_data.empty:
+    # Настройка графика
+    plt.figure(figsize=(12, 6))
+    sns.lineplot(data=filtered_data, x='year', y='F_mod_sev_tot', hue='country', marker='o')
+
+    # Настройка осей
+    plt.xticks(filtered_data['year'].unique(), rotation=45)
+    plt.title('Изменение продовольственной безопасности по годам для выбранных стран')
+    plt.xlabel('Год')
+    plt.ylabel('Модерированная тяжесть продовольственной безопасности')
+
+    # Отображаем график в Streamlit
+    st.pyplot(plt)
+else:
+    st.error("Не удалось получить данные для выбранных стран.")
